@@ -44,11 +44,24 @@ namespace MusikSpelare_Cskarp
 
 		private void ButtonPlay_Click(object sender, EventArgs e)
 		{
+			if(isPlaying)
+			{
+				player.Pause();
+				isPlaying = false;
+				return;
+			}
 			if(songList.Count == 0) { return; }
 			if(currentSong == null)
 			{
-				SetSong(songList[0], true); currentSongIndex = 0;
-			} else { PlaySong(); }
+				SetSong(songList[0], true); 
+				currentSongIndex = 0;
+				return;
+			}
+			if(!isPlaying)
+			{
+				PlaySong();
+				isPlaying = true;
+			}
 		}
 		private void ButtonPause_Click(object sender, EventArgs e)
 		{
@@ -78,8 +91,7 @@ namespace MusikSpelare_Cskarp
 		}
 		private void buttonPrevious_Click(object sender, EventArgs e)
 		{
-			Console.WriteLine(player.Position.TotalSeconds);
-			if(player.Position.TotalSeconds < 1) { PreviousSong(true); } else { PreviousSong(false); }
+			if(player.Position.TotalSeconds < 0.5) { PreviousSong(true); } else { PreviousSong(false); }
 		}
 		private void buttonNext_Click(object sender, EventArgs e)
 		{
