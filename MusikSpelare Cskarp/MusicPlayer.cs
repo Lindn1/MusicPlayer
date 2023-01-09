@@ -19,28 +19,27 @@ namespace MusikSpelare_Cskarp
 
 		public MusicPlayer()
 		{
-			
+
 			InitializeComponent();
 			ConfigureTimer();
 			SongEndedConfig();
-			buttonPrevious.DoubleClick += buttonPrevious_DoubleClick;
 		}
 
-		struct Songs
-		{
-			private TagLib.File file;
-			public Songs(string path)
-			{
-				file = TagLib.File.Create(path);
-			}
+		//struct Songs
+		//{
+		//	private TagLib.File file;
+		//	public Songs(string path)
+		//	{
+		//		file = TagLib.File.Create(path);
+		//	}
 
-			public string GetTitle() { return file.Name; }
-
-
+		//	public string GetTitle() { return file.Name; }
 
 
 
-		}
+
+
+		//}
 
 
 		private void ButtonPlay_Click(object sender, EventArgs e)
@@ -79,12 +78,8 @@ namespace MusikSpelare_Cskarp
 		}
 		private void buttonPrevious_Click(object sender, EventArgs e)
 		{
-			//if(player.Position)
-			PreviousSong(false);
-		}
-		private void buttonPrevious_DoubleClick(object sender, EventArgs e)
-		{
-			PreviousSong(true);
+			Console.WriteLine(player.Position.TotalSeconds);
+			if(player.Position.TotalSeconds < 1) { PreviousSong(true); } else { PreviousSong(false); }
 		}
 		private void buttonNext_Click(object sender, EventArgs e)
 		{
