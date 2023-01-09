@@ -32,7 +32,7 @@
 			this.buttonPlay = new System.Windows.Forms.Button();
 			this.buttonPause = new System.Windows.Forms.Button();
 			this.buttonStop = new System.Windows.Forms.Button();
-			this.buttonPrevious = new System.Windows.Forms.Button();
+			this.buttonPrevious = new DoubleClickButton();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.topRow = new System.Windows.Forms.Panel();
@@ -93,6 +93,7 @@
 			this.buttonPrevious.Text = "Previous";
 			this.buttonPrevious.UseVisualStyleBackColor = true;
 			this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);
+			this.buttonPrevious.DoubleClick += new System.EventHandler(this.buttonPrevious_DoubleClick);
 			// 
 			// pictureBox1
 			// 

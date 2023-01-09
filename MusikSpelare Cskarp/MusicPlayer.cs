@@ -19,10 +19,10 @@ namespace MusikSpelare_Cskarp
 
 		public MusicPlayer()
 		{
-
 			InitializeComponent();
 			ConfigureTimer();
 			SongEndedConfig();
+
 		}
 
 		//struct Songs
@@ -32,15 +32,8 @@ namespace MusikSpelare_Cskarp
 		//	{
 		//		file = TagLib.File.Create(path);
 		//	}
-
 		//	public string GetTitle() { return file.Name; }
-
-
-
-
-
 		//}
-
 
 		private void ButtonPlay_Click(object sender, EventArgs e)
 		{
@@ -91,7 +84,11 @@ namespace MusikSpelare_Cskarp
 		}
 		private void buttonPrevious_Click(object sender, EventArgs e)
 		{
-			if(player.Position.TotalSeconds < 0.5) { PreviousSong(true); } else { PreviousSong(false); }
+			PreviousSong(false);
+		}
+		private void buttonPrevious_DoubleClick(object sender, EventArgs e)
+		{
+			PreviousSong(true);
 		}
 		private void buttonNext_Click(object sender, EventArgs e)
 		{
