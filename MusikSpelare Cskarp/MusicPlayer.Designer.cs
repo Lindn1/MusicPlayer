@@ -28,13 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.buttonPlay = new System.Windows.Forms.Button();
-			this.buttonPause = new System.Windows.Forms.Button();
 			this.buttonStop = new System.Windows.Forms.Button();
-			this.buttonPrevious = new DoubleClickButton();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.topRow = new System.Windows.Forms.Panel();
 			this.topLabel = new System.Windows.Forms.Label();
 			this.albumLabel = new System.Windows.Forms.Label();
@@ -48,6 +44,7 @@
 			this.yearLabel = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel2 = new System.Windows.Forms.Panel();
+			this.buttonPrevious = new MusikSpelare_Cskarp.DoubleClickButton();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.topRow.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -56,7 +53,7 @@
 			// 
 			// buttonPlay
 			// 
-			this.buttonPlay.Location = new System.Drawing.Point(236, 32);
+			this.buttonPlay.Location = new System.Drawing.Point(84, 32);
 			this.buttonPlay.Name = "buttonPlay";
 			this.buttonPlay.Size = new System.Drawing.Size(75, 23);
 			this.buttonPlay.TabIndex = 0;
@@ -64,36 +61,15 @@
 			this.buttonPlay.UseVisualStyleBackColor = true;
 			this.buttonPlay.Click += new System.EventHandler(this.ButtonPlay_Click);
 			// 
-			// buttonPause
-			// 
-			this.buttonPause.Location = new System.Drawing.Point(158, 32);
-			this.buttonPause.Name = "buttonPause";
-			this.buttonPause.Size = new System.Drawing.Size(75, 23);
-			this.buttonPause.TabIndex = 1;
-			this.buttonPause.Text = "Pause";
-			this.buttonPause.UseVisualStyleBackColor = true;
-			this.buttonPause.Click += new System.EventHandler(this.ButtonPause_Click);
-			// 
 			// buttonStop
 			// 
-			this.buttonStop.Location = new System.Drawing.Point(80, 32);
+			this.buttonStop.Location = new System.Drawing.Point(240, 32);
 			this.buttonStop.Name = "buttonStop";
 			this.buttonStop.Size = new System.Drawing.Size(75, 23);
 			this.buttonStop.TabIndex = 2;
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = true;
 			this.buttonStop.Click += new System.EventHandler(this.ButtonStop_Click);
-			// 
-			// buttonPrevious
-			// 
-			this.buttonPrevious.Location = new System.Drawing.Point(314, 32);
-			this.buttonPrevious.Name = "buttonPrevious";
-			this.buttonPrevious.Size = new System.Drawing.Size(75, 23);
-			this.buttonPrevious.TabIndex = 3;
-			this.buttonPrevious.Text = "Previous";
-			this.buttonPrevious.UseVisualStyleBackColor = true;
-			this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);
-			this.buttonPrevious.DoubleClick += new System.EventHandler(this.buttonPrevious_DoubleClick);
 			// 
 			// pictureBox1
 			// 
@@ -106,12 +82,6 @@
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
-			// 
-			// imageList1
-			// 
-			this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-			this.imageList1.ImageSize = new System.Drawing.Size(128, 128);
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// topRow
 			// 
@@ -155,7 +125,7 @@
 			// 
 			// buttonNext
 			// 
-			this.buttonNext.Location = new System.Drawing.Point(392, 32);
+			this.buttonNext.Location = new System.Drawing.Point(162, 32);
 			this.buttonNext.Name = "buttonNext";
 			this.buttonNext.Size = new System.Drawing.Size(75, 23);
 			this.buttonNext.TabIndex = 7;
@@ -166,15 +136,15 @@
 			// listSongBox
 			// 
 			this.listSongBox.FormattingEnabled = true;
-			this.listSongBox.Location = new System.Drawing.Point(15, 55);
+			this.listSongBox.Location = new System.Drawing.Point(15, 32);
 			this.listSongBox.Name = "listSongBox";
-			this.listSongBox.Size = new System.Drawing.Size(220, 407);
+			this.listSongBox.Size = new System.Drawing.Size(220, 498);
 			this.listSongBox.TabIndex = 8;
 			this.listSongBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListSongBox_DoubleClick);
 			// 
 			// buttonLoadFolder
 			// 
-			this.buttonLoadFolder.Location = new System.Drawing.Point(2, 32);
+			this.buttonLoadFolder.Location = new System.Drawing.Point(431, 32);
 			this.buttonLoadFolder.Name = "buttonLoadFolder";
 			this.buttonLoadFolder.Size = new System.Drawing.Size(75, 23);
 			this.buttonLoadFolder.TabIndex = 9;
@@ -225,11 +195,10 @@
 			this.panel1.Controls.Add(this.buttonNext);
 			this.panel1.Controls.Add(this.progressBar);
 			this.panel1.Controls.Add(this.buttonStop);
-			this.panel1.Controls.Add(this.buttonPause);
 			this.panel1.Controls.Add(this.buttonPlay);
-			this.panel1.Location = new System.Drawing.Point(15, 472);
+			this.panel1.Location = new System.Drawing.Point(241, 472);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(735, 58);
+			this.panel1.Size = new System.Drawing.Size(509, 58);
 			this.panel1.TabIndex = 14;
 			// 
 			// panel2
@@ -243,6 +212,17 @@
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(200, 68);
 			this.panel2.TabIndex = 15;
+			// 
+			// buttonPrevious
+			// 
+			this.buttonPrevious.Location = new System.Drawing.Point(6, 32);
+			this.buttonPrevious.Name = "buttonPrevious";
+			this.buttonPrevious.Size = new System.Drawing.Size(75, 23);
+			this.buttonPrevious.TabIndex = 3;
+			this.buttonPrevious.Text = "Previous";
+			this.buttonPrevious.UseVisualStyleBackColor = true;
+			this.buttonPrevious.DoubleClick += new System.EventHandler(this.buttonPrevious_DoubleClick);
+			this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);
 			// 
 			// MusicPlayer
 			// 
@@ -270,10 +250,7 @@
         #endregion
 
         private System.Windows.Forms.Button buttonPlay;
-        private System.Windows.Forms.Button buttonPause;
         private System.Windows.Forms.Button buttonStop;
-        private System.Windows.Forms.Button buttonPrevious;
-        private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel topRow;
         private System.Windows.Forms.Label topLabel;
@@ -288,6 +265,7 @@
         private System.Windows.Forms.Label yearLabel;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Panel panel2;
+		private DoubleClickButton buttonPrevious;
 	}
 }
 

@@ -1,50 +1,32 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 
 namespace MusikSpelare_Cskarp
 {
 	internal class Song
 	{
-		private Uri path { get; }
-		private TagLib.File file;
-		private string artist;
-		private string album;
-		private string title;
-		private string year;
-		private string length;
-
-		public Song(string path)
+		private TagLib.File File { get; }
+		public string Path { get; }
+		public string SongName { get { return File.Tag.Title; } }
+		public string ArtistName { get { return File.Tag.FirstAlbumArtist; } }
+		public string AlbumName { get { return File.Tag.Album; } }
+		public string AlbumYear { get { return File.Tag.Year.ToString(); } }
+		public string SongLength { get { return File.Properties.Duration.Subtract(new System.TimeSpan(File.Properties.Duration.Seconds)).ToString(); } }
+		public Image AlbumCover
 		{
-			this.path = new Uri(path);
-			file = TagLib.File.Create(this.path.OriginalString);
-			artist = file.Tag.FirstAlbumArtist;
-			album = file.Tag.Album;
-			title = file.Tag.Title;
-			year = file.Tag.Year.ToString();
-			TimeSpan sl = file.Properties.Duration;
-			length = sl.Subtract(new TimeSpan(sl.Milliseconds)).ToString();
-		}
-
-		public Uri GetPath() { return path; }
-		public TagLib.File GetFile() { return file; }
-		public string GetArtist() { return artist; }
-		public string GetAlbum() { return album; }
-		public string GetTitle() { return title; }
-		public string GetYear() { return year; }
-		public string GetLength() { return length; }
-		public Image GetAlbumArt()
-		{
-			if(file.Tag.Pictures.Length > 0)
+			get
 			{
-				if(file.Tag.Pictures[0].Data.Data.Length > 0)
+				if(File.Tag.Pictures.Length > 0)
 				{
-					MemoryStream ms = new MemoryStream(file.Tag.Pictures[0].Data.Data);
-					return Image.FromStream(ms); ;
-				}
+					using(MemoryStream ms = new MemoryStream(File.Tag.Pictures[0].Data.Data)) { return Image.FromStream(ms); }
+				} else { return Properties.Resources.NotLoaded; }
 			}
-			return Properties.Resources.NotLoaded; ;
 		}
 
+		public Song(string Path)
+		{
+			this.Path = Path;
+			this.File = TagLib.File.Create(Path);
+		}
 	}
 }
