@@ -10,7 +10,8 @@ namespace MusikSpelare_Cskarp
 	public partial class MusicPlayer : Form
 	{
 		private MediaPlayer player = new MediaPlayer();
-		private List<Song> songList = new List<Song>();
+		//private List<Song> songList = new List<Song>();
+		private List<string> songPaths = new List<string>();
 		private Song currentSong;
 		private int currentSongIndex;
 		private Timer timer = new Timer();
@@ -30,10 +31,10 @@ namespace MusikSpelare_Cskarp
 				PauseSong();
 				return;
 			}
-			if(songList.Count == 0) { return; }
+			if(songPaths.Count == 0) { return; }
 			if(currentSong == null)
 			{
-				SetSong(songList[0], true);
+				SetSong(songPaths[0], true);
 				currentSongIndex = 0;
 				return;
 			}
@@ -42,12 +43,6 @@ namespace MusikSpelare_Cskarp
 				PlaySong();
 				return;
 			}
-		}
-
-		private void ButtonPause_Click(object sender, EventArgs e)
-		{
-			player.Pause();
-			isPlaying = false;
 		}
 
 		private void ButtonStop_Click(object sender, EventArgs e)
@@ -62,11 +57,19 @@ namespace MusikSpelare_Cskarp
 
 			if(fb.ShowDialog() == DialogResult.OK)
 			{
-				songList.Clear();
-				foreach(Song song in (await Task.Run(() => GetMP3Files(fb.SelectedPath))))
+				songPaths.Clear();
+				foreach(string path in await Task.Run(() => GetMP3Files(fb.SelectedPath)))
 				{
-					songList.Add(song);
-					listSongBox.Items.Add(song.SongName);
+					try 
+					{
+						listSongBox.Items.Add(new Song(path).SongName);
+						songPaths.Add(path);
+					} 
+					catch(System.ArgumentNullException) 
+					{
+						continue;
+					}
+					
 				}
 			}
 		}
@@ -87,15 +90,15 @@ namespace MusikSpelare_Cskarp
 		}
 
 		// Return all .mp3 files in a given directory (subdirectories included) as a List
-		private List<Song> GetMP3Files(string directory)
+		private List<string> GetMP3Files(string directory)
 		{
-			List<Song> songFiles = new List<Song>();
+			List<string> songFiles = new List<string>();
 
 			// Get all files in the directory
 			string[] files = Directory.GetFiles(directory, "*.mp3");
 			foreach(string file in files)
 			{
-				songFiles.Add(new Song(file));
+				songFiles.Add(file);
 			}
 
 			// Get all subdirectories
@@ -115,7 +118,7 @@ namespace MusikSpelare_Cskarp
 			if(listSongBox.IndexFromPoint(e.Location) != ListBox.NoMatches)
 			{
 				currentSongIndex = listSongBox.IndexFromPoint(e.Location);
-				SetSong(songList[currentSongIndex], true);
+				SetSong(songPaths[currentSongIndex], true);
 			}
 		}
 
@@ -174,26 +177,24 @@ namespace MusikSpelare_Cskarp
 			{
 				if(currentSongIndex == 0) { return; }
 				currentSongIndex--;
-				Song song = songList[currentSongIndex];
-				SetSong(song, isPlaying);
+				SetSong(songPaths[currentSongIndex], isPlaying);
 			} else { player.Position = TimeSpan.Zero; }
 		}
 
 		private void NextSong()
 		{
-			if(currentSongIndex < songList.Count - 1)
+			if(currentSongIndex < songPaths.Count - 1)
 			{
 				currentSongIndex++;
-				Song song = songList[currentSongIndex];
-				if(isPlaying) { SetSong(song, true); } else { SetSong(song, false); }
+				if(isPlaying) { SetSong(songPaths[currentSongIndex], true); } else { SetSong(songPaths[currentSongIndex], false); }
 			}
 		}
 
 		// Sets labels to the songs details and configures progressbar length and position
-		private void SetSong(Song song, bool playSongAfterSetting)
+		private void SetSong(string path, bool playSongAfterSetting)
 		{
-			currentSong = song;
-			player.Open(new Uri(currentSong.Path));
+			currentSong = new Song(path);
+			player.Open(new Uri(currentSong.path));
 			SetArtistName();
 			SetAlbumName();
 			SetSongName();
