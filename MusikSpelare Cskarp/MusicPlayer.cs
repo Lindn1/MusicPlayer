@@ -214,5 +214,10 @@ namespace MusikSpelare_Cskarp
 		private void SetSongYear() => yearLabel.Text = "Year: " + currentSong.AlbumYear;
 		private void SetSongLength() => songLengthLabel.Text = "Song Length: " + currentSong.SongLength;
 		private void SetAlbumPicture() => pictureBox1.Image = currentSong.AlbumCover;
+
+		private void VolumeBar_Scroll(object sender, EventArgs e)
+		{
+			player.Volume = (double)VolumeBar.Value / 100;
+		}
 	}
 }
