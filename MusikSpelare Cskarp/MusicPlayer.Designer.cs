@@ -43,8 +43,8 @@
 			this.titleLabel = new System.Windows.Forms.Label();
 			this.yearLabel = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.panel2 = new System.Windows.Forms.Panel();
 			this.buttonPrevious = new MusikSpelare_Cskarp.DoubleClickButton();
+			this.panel2 = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.topRow.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -76,7 +76,7 @@
 			this.pictureBox1.BackgroundImage = global::MusikSpelare_Cskarp.Properties.Resources.NotLoaded;
 			this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox1.Location = new System.Drawing.Point(241, 225);
+			this.pictureBox1.Location = new System.Drawing.Point(923, 653);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(237, 237);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -91,7 +91,7 @@
 			this.topRow.Dock = System.Windows.Forms.DockStyle.Top;
 			this.topRow.Location = new System.Drawing.Point(0, 0);
 			this.topRow.Name = "topRow";
-			this.topRow.Size = new System.Drawing.Size(762, 19);
+			this.topRow.Size = new System.Drawing.Size(1175, 19);
 			this.topRow.TabIndex = 5;
 			// 
 			// topLabel
@@ -109,7 +109,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.albumLabel.AutoSize = true;
-			this.albumLabel.Location = new System.Drawing.Point(3, 13);
+			this.albumLabel.Location = new System.Drawing.Point(3, 26);
 			this.albumLabel.Name = "albumLabel";
 			this.albumLabel.Size = new System.Drawing.Size(42, 13);
 			this.albumLabel.TabIndex = 4;
@@ -119,9 +119,10 @@
 			// 
 			this.progressBar.Location = new System.Drawing.Point(3, 3);
 			this.progressBar.Name = "progressBar";
-			this.progressBar.Size = new System.Drawing.Size(729, 23);
+			this.progressBar.Size = new System.Drawing.Size(1142, 23);
 			this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.progressBar.TabIndex = 6;
+			this.progressBar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.progressBar_MouseClick);
 			// 
 			// buttonNext
 			// 
@@ -129,7 +130,7 @@
 			this.buttonNext.Name = "buttonNext";
 			this.buttonNext.Size = new System.Drawing.Size(75, 23);
 			this.buttonNext.TabIndex = 7;
-			this.buttonNext.Text = "Next";
+			this.buttonNext.Text = ">>|";
 			this.buttonNext.UseVisualStyleBackColor = true;
 			this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
 			// 
@@ -138,13 +139,13 @@
 			this.listSongBox.FormattingEnabled = true;
 			this.listSongBox.Location = new System.Drawing.Point(15, 32);
 			this.listSongBox.Name = "listSongBox";
-			this.listSongBox.Size = new System.Drawing.Size(220, 498);
+			this.listSongBox.Size = new System.Drawing.Size(902, 849);
 			this.listSongBox.TabIndex = 8;
 			this.listSongBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListSongBox_DoubleClick);
 			// 
 			// buttonLoadFolder
 			// 
-			this.buttonLoadFolder.Location = new System.Drawing.Point(431, 32);
+			this.buttonLoadFolder.Location = new System.Drawing.Point(1070, 32);
 			this.buttonLoadFolder.Name = "buttonLoadFolder";
 			this.buttonLoadFolder.Size = new System.Drawing.Size(75, 23);
 			this.buttonLoadFolder.TabIndex = 9;
@@ -173,7 +174,7 @@
 			// titleLabel
 			// 
 			this.titleLabel.AutoSize = true;
-			this.titleLabel.Location = new System.Drawing.Point(3, 39);
+			this.titleLabel.Location = new System.Drawing.Point(3, 13);
 			this.titleLabel.Name = "titleLabel";
 			this.titleLabel.Size = new System.Drawing.Size(38, 13);
 			this.titleLabel.TabIndex = 12;
@@ -182,7 +183,7 @@
 			// yearLabel
 			// 
 			this.yearLabel.AutoSize = true;
-			this.yearLabel.Location = new System.Drawing.Point(3, 26);
+			this.yearLabel.Location = new System.Drawing.Point(3, 39);
 			this.yearLabel.Name = "yearLabel";
 			this.yearLabel.Size = new System.Drawing.Size(35, 13);
 			this.yearLabel.TabIndex = 13;
@@ -196,10 +197,21 @@
 			this.panel1.Controls.Add(this.progressBar);
 			this.panel1.Controls.Add(this.buttonStop);
 			this.panel1.Controls.Add(this.buttonPlay);
-			this.panel1.Location = new System.Drawing.Point(241, 472);
+			this.panel1.Location = new System.Drawing.Point(15, 896);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(509, 58);
+			this.panel1.Size = new System.Drawing.Size(1148, 58);
 			this.panel1.TabIndex = 14;
+			// 
+			// buttonPrevious
+			// 
+			this.buttonPrevious.Location = new System.Drawing.Point(6, 32);
+			this.buttonPrevious.Name = "buttonPrevious";
+			this.buttonPrevious.Size = new System.Drawing.Size(75, 23);
+			this.buttonPrevious.TabIndex = 3;
+			this.buttonPrevious.Text = "|<<";
+			this.buttonPrevious.UseVisualStyleBackColor = true;
+			this.buttonPrevious.DoubleClick += new System.EventHandler(this.ButtonPrevious_DoubleClick);
+			this.buttonPrevious.Click += new System.EventHandler(this.ButtonPrevious_Click);
 			// 
 			// panel2
 			// 
@@ -208,28 +220,17 @@
 			this.panel2.Controls.Add(this.songLengthLabel);
 			this.panel2.Controls.Add(this.titleLabel);
 			this.panel2.Controls.Add(this.yearLabel);
-			this.panel2.Location = new System.Drawing.Point(241, 151);
+			this.panel2.Location = new System.Drawing.Point(923, 579);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(200, 68);
 			this.panel2.TabIndex = 15;
-			// 
-			// buttonPrevious
-			// 
-			this.buttonPrevious.Location = new System.Drawing.Point(6, 32);
-			this.buttonPrevious.Name = "buttonPrevious";
-			this.buttonPrevious.Size = new System.Drawing.Size(75, 23);
-			this.buttonPrevious.TabIndex = 3;
-			this.buttonPrevious.Text = "Previous";
-			this.buttonPrevious.UseVisualStyleBackColor = true;
-			this.buttonPrevious.DoubleClick += new System.EventHandler(this.buttonPrevious_DoubleClick);
-			this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);
 			// 
 			// MusicPlayer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(243)))), ((int)(((byte)(245)))));
-			this.ClientSize = new System.Drawing.Size(762, 542);
+			this.ClientSize = new System.Drawing.Size(1175, 966);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.listSongBox);

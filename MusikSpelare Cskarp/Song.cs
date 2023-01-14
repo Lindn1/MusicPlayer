@@ -10,35 +10,41 @@ namespace MusikSpelare_Cskarp
 		{
 			get
 			{
-				try { return TagLib.File.Create(path).Tag.Title; } catch(TagLib.CorruptFileException) { return "CorruptFileException"; }
+				try { return TagLib.File.Create(path).Tag.Title; } 
+				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; } 
+				catch(TagLib.UnsupportedFormatException) { return "UnsupportedFormatException: " + path; }
 			}
 		}
 		public string ArtistName
 		{
 			get
 			{
-				try { return TagLib.File.Create(path).Tag.FirstAlbumArtist; } catch(TagLib.CorruptFileException) { return "CorruptFileException"; }
+				try { return TagLib.File.Create(path).Tag.FirstAlbumArtist; } 
+				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
 			}
 		}
 		public string AlbumName
 		{
 			get
 			{
-				try { return TagLib.File.Create(path).Tag.Album; } catch(TagLib.CorruptFileException) { return "CorruptFileException"; }
+				try { return TagLib.File.Create(path).Tag.Album; } 
+				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
 			}
 		}
 		public string AlbumYear
 		{
 			get
 			{
-				try { return TagLib.File.Create(path).Tag.Year.ToString(); } catch(TagLib.CorruptFileException) { return "CorruptFileException"; }
+				try { return TagLib.File.Create(path).Tag.Year.ToString(); } 
+				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
 			}
 		}
 		public string SongLength
 		{
 			get
 			{
-				try { return TagLib.File.Create(path).Properties.Duration.ToString(); } catch(TagLib.CorruptFileException) { return "CorruptFileException"; }
+				try { return System.TimeSpan.FromSeconds((int)TagLib.File.Create(path).Properties.Duration.TotalSeconds).ToString(); } 
+				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
 			}
 		}
 		public Image AlbumCover

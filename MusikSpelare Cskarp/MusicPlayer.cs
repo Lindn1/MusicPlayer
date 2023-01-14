@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,8 +10,8 @@ namespace MusikSpelare_Cskarp
 {
 	public partial class MusicPlayer : Form
 	{
+		private string musicFolderSavePath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\musicfolders.txt";
 		private MediaPlayer player = new MediaPlayer();
-		//private List<Song> songList = new List<Song>();
 		private List<string> songPaths = new List<string>();
 		private Song currentSong;
 		private int currentSongIndex;
@@ -20,6 +21,7 @@ namespace MusikSpelare_Cskarp
 		public MusicPlayer()
 		{
 			InitializeComponent();
+			LoadMusicFolderAtStartUp();
 			ConfigureTimer();
 			SongEndedConfig();
 		}
@@ -51,35 +53,12 @@ namespace MusikSpelare_Cskarp
 			isPlaying = false;
 		}
 
-		private async void LoadMusicFolder(object sender, EventArgs e)
-		{
-			FolderBrowserDialog fb = new FolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyComputer };
-
-			if(fb.ShowDialog() == DialogResult.OK)
-			{
-				songPaths.Clear();
-				foreach(string path in await Task.Run(() => GetMP3Files(fb.SelectedPath)))
-				{
-					try 
-					{
-						listSongBox.Items.Add(new Song(path).SongName);
-						songPaths.Add(path);
-					} 
-					catch(System.ArgumentNullException) 
-					{
-						continue;
-					}
-					
-				}
-			}
-		}
-
-		private void buttonPrevious_Click(object sender, EventArgs e)
+		private void ButtonPrevious_Click(object sender, EventArgs e)
 		{
 			PreviousSong(false);
 		}
 
-		private void buttonPrevious_DoubleClick(object sender, EventArgs e)
+		private void ButtonPrevious_DoubleClick(object sender, EventArgs e)
 		{
 			PreviousSong(true);
 		}
@@ -89,28 +68,46 @@ namespace MusikSpelare_Cskarp
 			NextSong();
 		}
 
-		// Return all .mp3 files in a given directory (subdirectories included) as a List
-		private List<string> GetMP3Files(string directory)
+		private void LoadMusicFolder(object sender, EventArgs e)
 		{
-			List<string> songFiles = new List<string>();
+			FolderBrowserDialog fb = new FolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyComputer };
 
-			// Get all files in the directory
-			string[] files = Directory.GetFiles(directory, "*.mp3");
-			foreach(string file in files)
+			if(fb.ShowDialog() == DialogResult.OK)
 			{
-				songFiles.Add(file);
+				songPaths.Clear();
+				GetMP3Files(fb.SelectedPath);
+				SaveToFile();
+				AddToSongBox();
 			}
+		}
 
-			// Get all subdirectories
+		private void AddToSongBox()
+		{
+			listSongBox.Items.AddRange(songPaths.ToArray());
+		}
+
+		private void GetMP3Files(string directory)
+		{
+			songPaths.AddRange(Directory.GetFiles(directory, "*.mp3"));
 			string[] subdirectories = Directory.GetDirectories(directory);
-
-			// Recursively search the subdirectories for .mp3 files
 			foreach(string subdirectory in subdirectories)
 			{
-				songFiles.AddRange(GetMP3Files(subdirectory));
+				GetMP3Files(subdirectory);
 			}
+		}
 
-			return songFiles;
+		private async Task SaveToFile()
+		{
+			await Task.Run(() => File.WriteAllLines(musicFolderSavePath, songPaths));
+		}
+
+		private void LoadMusicFolderAtStartUp()
+		{
+			if(File.Exists(musicFolderSavePath))
+			{
+				songPaths.AddRange(File.ReadAllLines(musicFolderSavePath));
+				AddToSongBox();
+			}
 		}
 
 		private void ListSongBox_DoubleClick(object sender, MouseEventArgs e)
@@ -120,6 +117,13 @@ namespace MusikSpelare_Cskarp
 				currentSongIndex = listSongBox.IndexFromPoint(e.Location);
 				SetSong(songPaths[currentSongIndex], true);
 			}
+		}
+
+		private void progressBar_MouseClick(object sender, MouseEventArgs e)
+		{
+			int clickPosition = (int)(((double)e.X / progressBar.Width) * player.NaturalDuration.TimeSpan.TotalMilliseconds);
+			player.Position = TimeSpan.FromMilliseconds(clickPosition);
+			progressBar.Value = clickPosition;
 		}
 
 		// Configures the timer used for the song progressbar.
@@ -194,18 +198,20 @@ namespace MusikSpelare_Cskarp
 		private void SetSong(string path, bool playSongAfterSetting)
 		{
 			currentSong = new Song(path);
-			player.Open(new Uri(currentSong.path));
+			player.Open(new Uri(path));
 			SetArtistName();
-			SetAlbumName();
 			SetSongName();
+			SetAlbumName();
+			SetSongYear();
 			SetSongLength();
 			SetAlbumPicture();
 			ConfigureProgressBar();
 			if(playSongAfterSetting) { PlaySong(); }
 		}
-		private void SetArtistName() => artistLabel.Text = currentSong.ArtistName;
-		private void SetAlbumName() => albumLabel.Text = currentSong.AlbumName;
-		private void SetSongName() => titleLabel.Text = currentSong.SongName;
+		private void SetArtistName() => artistLabel.Text = "Artist: " + currentSong.ArtistName;
+		private void SetSongName() => titleLabel.Text = "Song: " + currentSong.SongName;
+		private void SetAlbumName() => albumLabel.Text = "Album: " + currentSong.AlbumName;
+		private void SetSongYear() => yearLabel.Text = "Year: " + currentSong.AlbumYear;
 		private void SetSongLength() => songLengthLabel.Text = "Song Length: " + currentSong.SongLength;
 		private void SetAlbumPicture() => pictureBox1.Image = currentSong.AlbumCover;
 	}
