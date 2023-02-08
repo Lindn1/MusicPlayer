@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,112 +9,52 @@ namespace MusikSpelare_Cskarp
 {
 	public partial class MusicPlayer : Form
 	{
-		private string musicFolderSavePath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\musicfolders.txt";
-		private MediaPlayer player = new MediaPlayer();
-		private List<string> songPaths = new List<string>();
+		private readonly MediaPlayer player = new MediaPlayer();
+		//private readonly List<string> songPaths = new List<string>();
 		private Song currentSong;
 		private int currentSongIndex;
-		private Timer timer = new Timer();
+		private readonly Timer timer = new Timer();
 		private bool isPlaying;
+		private MusicFiles musicFiles = new MusicFiles();
 
 		public MusicPlayer()
 		{
 			InitializeComponent();
-			LoadMusicFolderAtStartUp();
+			//Task.Run(async () => await LoadMusicFolderAtStartUp());
+			LoadFolderOnStartup();
 			ConfigureTimer();
 			SongEndedConfig();
 		}
 
 		private void ButtonPlay_Click(object sender, EventArgs e)
 		{
-			if(isPlaying)
-			{
-				PauseSong();
-				return;
-			}
-			if(songPaths.Count == 0) { return; }
+			if(isPlaying) { PauseSong(); return; }
+			if(musicFiles.songPaths.Count == 0) { return; }
 			if(currentSong == null)
 			{
-				SetSong(songPaths[0], true);
 				currentSongIndex = 0;
+				SetSong(musicFiles.songPaths[currentSongIndex], true);
 				return;
 			}
-			if(!isPlaying)
-			{
-				PlaySong();
-				return;
-			}
+			if(!isPlaying) { PlaySong(); return; }
 		}
 
-		private void ButtonStop_Click(object sender, EventArgs e)
-		{
-			player.Stop();
-			isPlaying = false;
-		}
+		private void ButtonStop_Click(object sender, EventArgs e) { StopSong(); }
 
-		private void ButtonPrevious_Click(object sender, EventArgs e)
-		{
-			PreviousSong(false);
-		}
+		private void ButtonPrevious_Click(object sender, EventArgs e) { PreviousSong(false); }
 
-		private void ButtonPrevious_DoubleClick(object sender, EventArgs e)
-		{
-			PreviousSong(true);
-		}
+		private void ButtonPrevious_DoubleClick(object sender, EventArgs e) { PreviousSong(true); }
 
-		private void buttonNext_Click(object sender, EventArgs e)
-		{
-			NextSong();
-		}
+		private void ButtonNext_Click(object sender, EventArgs e) { NextSong(); }
 
-		private void LoadMusicFolder(object sender, EventArgs e)
-		{
-			FolderBrowserDialog fb = new FolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyComputer };
-
-			if(fb.ShowDialog() == DialogResult.OK)
-			{
-				songPaths.Clear();
-				GetMP3Files(fb.SelectedPath);
-				SaveToFile();
-				AddToSongBox();
-			}
-		}
-
-		private void AddToSongBox()
-		{
-			listSongBox.Items.AddRange(songPaths.ToArray());
-		}
-
-		private void GetMP3Files(string directory)
-		{
-			songPaths.AddRange(Directory.GetFiles(directory, "*.mp3"));
-			string[] subdirectories = Directory.GetDirectories(directory);
-			foreach(string subdirectory in subdirectories)
-			{
-				GetMP3Files(subdirectory);
-			}
-		}
-
-		private async Task SaveToFile()
-		{
-			await Task.Run(() => File.WriteAllLines(musicFolderSavePath, songPaths));
-		}
-
-		private void LoadMusicFolderAtStartUp()
-		{
-			if(File.Exists(musicFolderSavePath))
-			{
-				songPaths.AddRange(File.ReadAllLines(musicFolderSavePath));
-				AddToSongBox();
-			}
-		}
+		private void AddToSongBox() { listSongBox.Items.AddRange(musicFiles.songPaths.ToArray()); }
 
 		private void ListSongBox_DoubleClick(object sender, MouseEventArgs e)
 		{
 			if(listSongBox.IndexFromPoint(e.Location) != ListBox.NoMatches)
 			{
 				currentSongIndex = listSongBox.IndexFromPoint(e.Location);
-				SetSong(songPaths[currentSongIndex], true);
+				SetSong(musicFiles.songPaths[currentSongIndex], true);
 			}
 		}
 
@@ -134,10 +73,7 @@ namespace MusikSpelare_Cskarp
 		}
 
 		// Updates progressBar value with current position of mediaplayer.
-		private void Timer_Tick(object sender, EventArgs e)
-		{
-			progressBar.Value = (int)player.Position.TotalMilliseconds;
-		}
+		private void Timer_Tick(object sender, EventArgs e) { progressBar.Value = (int)player.Position.TotalMilliseconds; }
 
 		// Configures song progressbar by setting the maximum length of the newly opened song as its maximum, starting the timer
 		// then closing the timer and resetting the progressbar when media is ended (ended == stopped or unloaded, pause does not count as ended)
@@ -157,11 +93,14 @@ namespace MusikSpelare_Cskarp
 		}
 
 		// Switch to next song after current song ends
-		private void SongEndedConfig()
-		{
-			player.MediaEnded += (sender, args) => { if(isPlaying) { NextSong(); } };
-		}
+		private void SongEndedConfig() { player.MediaEnded += (sender, args) => { if(isPlaying) { NextSong(); } }; }
 
+		private void StopSong()
+		{
+			player.Stop();
+			buttonPlay.Text = "Play";
+			isPlaying = false;
+		}
 		private void PauseSong()
 		{
 			player.Pause();
@@ -181,17 +120,22 @@ namespace MusikSpelare_Cskarp
 			{
 				if(currentSongIndex == 0) { return; }
 				currentSongIndex--;
-				SetSong(songPaths[currentSongIndex], isPlaying);
+				SetSong(musicFiles.songPaths[currentSongIndex], isPlaying);
 			} else { player.Position = TimeSpan.Zero; }
 		}
 
 		private void NextSong()
 		{
-			if(currentSongIndex < songPaths.Count - 1)
+			if(currentSongIndex < musicFiles.songPaths.Count - 1)
 			{
 				currentSongIndex++;
-				if(isPlaying) { SetSong(songPaths[currentSongIndex], true); } else { SetSong(songPaths[currentSongIndex], false); }
+				if(isPlaying) { SetSong(musicFiles.songPaths[currentSongIndex], true); } else { SetSong(musicFiles.songPaths[currentSongIndex], false); }
 			}
+		}
+
+		private void VolumeBar_Scroll(object sender, EventArgs e)
+		{
+			player.Volume = (double)VolumeBar.Value / 100;
 		}
 
 		// Sets labels to the songs details and configures progressbar length and position
@@ -213,11 +157,23 @@ namespace MusikSpelare_Cskarp
 		private void SetAlbumName() => albumLabel.Text = "Album: " + currentSong.AlbumName;
 		private void SetSongYear() => yearLabel.Text = "Year: " + currentSong.AlbumYear;
 		private void SetSongLength() => songLengthLabel.Text = "Song Length: " + currentSong.SongLength;
-		private void SetAlbumPicture() => pictureBox1.Image = currentSong.AlbumCover;
+		private void SetAlbumPicture() => albumPictureBox.Image = currentSong.AlbumCover;
 
-		private void VolumeBar_Scroll(object sender, EventArgs e)
+		private void artistsButton_Click(object sender, EventArgs e)
 		{
-			player.Volume = (double)VolumeBar.Value / 100;
+
+		}
+
+		private async void buttonLoadFolder_ClickAsync(object sender, EventArgs e)
+		{
+			await musicFiles.LoadMusicFolder();
+			AddToSongBox();
+		}
+
+		private async Task LoadFolderOnStartup()
+		{
+			await musicFiles.LoadMusicFolderAtStartUp();
+			AddToSongBox();
 		}
 	}
 }

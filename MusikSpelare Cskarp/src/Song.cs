@@ -3,8 +3,13 @@ using System.IO;
 
 namespace MusikSpelare_Cskarp
 {
-	internal class Song
+	[System.Serializable]
+	public class Song
 	{
+		public Song(string path)
+		{
+			this.path = path;
+		}
 		public string path;
 		public string SongName
 		{
@@ -13,6 +18,7 @@ namespace MusikSpelare_Cskarp
 				try { return TagLib.File.Create(path).Tag.Title; } 
 				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; } 
 				catch(TagLib.UnsupportedFormatException) { return "UnsupportedFormatException: " + path; }
+				catch(System.ArgumentNullException) { return "Null: " + path; }
 			}
 		}
 		public string ArtistName
@@ -21,6 +27,7 @@ namespace MusikSpelare_Cskarp
 			{
 				try { return TagLib.File.Create(path).Tag.FirstAlbumArtist; } 
 				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
+				catch(System.ArgumentNullException) { return "Null: " + path; }
 			}
 		}
 		public string AlbumName
@@ -29,6 +36,7 @@ namespace MusikSpelare_Cskarp
 			{
 				try { return TagLib.File.Create(path).Tag.Album; } 
 				catch(TagLib.CorruptFileException) { return "CorruptFileException: " + path; }
+				catch(System.ArgumentNullException) { return "Null: " + path; }
 			}
 		}
 		public string AlbumYear
@@ -58,16 +66,10 @@ namespace MusikSpelare_Cskarp
 					using(MemoryStream ms = new MemoryStream(file.Tag.Pictures[0].Data.Data))
 					{
 						Image img = Image.FromStream(ms);
-						ms.Close();
 						return img;
 					}
 				} else { return Properties.Resources.NotLoaded; }
 			}
-		}
-
-		public Song(string path)
-		{
-			this.path = path;
 		}
 	}
 }
