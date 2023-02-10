@@ -21,14 +21,18 @@ namespace MusikSpelare_Cskarp
 					(Environment.SpecialFolder.CommonApplicationData) + "\\albumsandsongs.txt";
 		public List<string> songPaths = new List<string>();
 		public List<Song> songs = new List<Song>();
-		public Dictionary<string, string> artistsAndSongs = new Dictionary<string, string>();
-		public Dictionary<string, string> albumsAndSongs = new Dictionary<string, string>();
+		public Dictionary<string, Song> pathsAndSongs = new Dictionary<string, Song>();
+		public Dictionary<Song, string> songsAndPaths = new Dictionary<Song, string>();
+		public Dictionary<string, List<string>> artistsAndAlbums = new Dictionary<string, List<string>>();
+		public Dictionary<string, List<string>> albumsAndSongs = new Dictionary<string, List<string>>();
 
 		public async Task LoadMusicFolder()
 		{
 			FolderBrowserDialog fb = new FolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyComputer };
 			if(fb.ShowDialog() == DialogResult.OK)
 			{
+				songPaths.Clear();
+				songs.Clear();
 				await GetMP3Files(fb.SelectedPath);
 				await LoadArtistsAndSongs();
 				await SaveToFile();
@@ -50,7 +54,7 @@ namespace MusikSpelare_Cskarp
 		private async Task LoadArtistsAndSongs()
 		{
 			await Task.Run(() =>
-			{
+			{				
 				foreach(string songPath in songPaths)
 				{
 					Song song = new Song(songPath);
@@ -97,7 +101,5 @@ namespace MusikSpelare_Cskarp
 
 		public List<string> GetSongPaths() { return songPaths; }
 		public List<Song> GetSongs() { return songs; }
-		public Dictionary<string, string> GetArtistsAndSongs() { return artistsAndSongs; }
-		public Dictionary<string, string> GetAlbumsAndSongs() { return albumsAndSongs; }
 	}
 }

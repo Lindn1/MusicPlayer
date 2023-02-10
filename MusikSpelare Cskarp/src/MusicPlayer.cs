@@ -20,8 +20,9 @@ namespace MusikSpelare_Cskarp
 		public MusicPlayer()
 		{
 			InitializeComponent();
-			//Task.Run(async () => await LoadMusicFolderAtStartUp());
-			LoadFolderOnStartup();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			LoadFolderOnStartup(); 
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 			ConfigureTimer();
 			SongEndedConfig();
 		}
@@ -47,22 +48,22 @@ namespace MusikSpelare_Cskarp
 
 		private void ButtonNext_Click(object sender, EventArgs e) { NextSong(); }
 
-		private void AddToSongBox() { listSongBox.Items.AddRange(musicFiles.songPaths.ToArray()); }
+		private void AddToSongBox() { ListSongBox.Items.AddRange(musicFiles.songPaths.ToArray()); }
 
 		private void ListSongBox_DoubleClick(object sender, MouseEventArgs e)
 		{
-			if(listSongBox.IndexFromPoint(e.Location) != ListBox.NoMatches)
+			if(ListSongBox.IndexFromPoint(e.Location) != ListBox.NoMatches)
 			{
-				currentSongIndex = listSongBox.IndexFromPoint(e.Location);
+				currentSongIndex = ListSongBox.IndexFromPoint(e.Location);
 				SetSong(musicFiles.songPaths[currentSongIndex], true);
 			}
 		}
 
 		private void progressBar_MouseClick(object sender, MouseEventArgs e)
 		{
-			int clickPosition = (int)(((double)e.X / progressBar.Width) * player.NaturalDuration.TimeSpan.TotalMilliseconds);
+			int clickPosition = (int)(((double)e.X / ProgressBar.Width) * player.NaturalDuration.TimeSpan.TotalMilliseconds);
 			player.Position = TimeSpan.FromMilliseconds(clickPosition);
-			progressBar.Value = clickPosition;
+			ProgressBar.Value = clickPosition;
 		}
 
 		// Configures the timer used for the song progressbar.
@@ -73,7 +74,7 @@ namespace MusikSpelare_Cskarp
 		}
 
 		// Updates progressBar value with current position of mediaplayer.
-		private void Timer_Tick(object sender, EventArgs e) { progressBar.Value = (int)player.Position.TotalMilliseconds; }
+		private void Timer_Tick(object sender, EventArgs e) { ProgressBar.Value = (int)player.Position.TotalMilliseconds; }
 
 		// Configures song progressbar by setting the maximum length of the newly opened song as its maximum, starting the timer
 		// then closing the timer and resetting the progressbar when media is ended (ended == stopped or unloaded, pause does not count as ended)
@@ -81,13 +82,13 @@ namespace MusikSpelare_Cskarp
 		{
 			player.MediaOpened += (sender, args) =>
 			{
-				progressBar.Maximum = (int)player.NaturalDuration.TimeSpan.TotalMilliseconds;
+				ProgressBar.Maximum = (int)player.NaturalDuration.TimeSpan.TotalMilliseconds;
 				timer.Start();
 			};
 
 			player.MediaEnded += (sender, args) =>
 			{
-				progressBar.Value = 0;
+				ProgressBar.Value = 0;
 				timer.Stop();
 			};
 		}
@@ -98,19 +99,19 @@ namespace MusikSpelare_Cskarp
 		private void StopSong()
 		{
 			player.Stop();
-			buttonPlay.Text = "Play";
+			ButtonPlay.Text = "Play";
 			isPlaying = false;
 		}
 		private void PauseSong()
 		{
 			player.Pause();
-			buttonPlay.Text = "Play";
+			ButtonPlay.Text = "Play";
 			isPlaying = false;
 		}
 		private void PlaySong()
 		{
 			player.Play();
-			buttonPlay.Text = "Pause";
+			ButtonPlay.Text = "Pause";
 			isPlaying = true;
 		}
 
@@ -146,18 +147,16 @@ namespace MusikSpelare_Cskarp
 			SetArtistName();
 			SetSongName();
 			SetAlbumName();
-			SetSongYear();
 			SetSongLength();
 			SetAlbumPicture();
 			ConfigureProgressBar();
 			if(playSongAfterSetting) { PlaySong(); }
 		}
-		private void SetArtistName() => artistLabel.Text = "Artist: " + currentSong.ArtistName;
-		private void SetSongName() => titleLabel.Text = "Song: " + currentSong.SongName;
-		private void SetAlbumName() => albumLabel.Text = "Album: " + currentSong.AlbumName;
-		private void SetSongYear() => yearLabel.Text = "Year: " + currentSong.AlbumYear;
-		private void SetSongLength() => songLengthLabel.Text = "Song Length: " + currentSong.SongLength;
-		private void SetAlbumPicture() => albumPictureBox.Image = currentSong.AlbumCover;
+		private void SetArtistName() => ArtistLabel.Text = "Artist: " + currentSong.ArtistName;
+		private void SetSongName() => SongLabel.Text = "Song: " + currentSong.SongName;
+		private void SetAlbumName() => AlbumLabel.Text = "Album: " + currentSong.AlbumName;
+		private void SetSongLength() => SongLengthLabel.Text = "Song Length: " + currentSong.SongLength;
+		private void SetAlbumPicture() => AlbumPictureBox.Image = currentSong.AlbumCover;
 
 		private void artistsButton_Click(object sender, EventArgs e)
 		{
